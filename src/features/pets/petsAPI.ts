@@ -1,8 +1,8 @@
 // import pets interface
-import { Pet } from './petsSlice';
+import { Pet } from '../../types';
 
 // A mock function to mimic making an async request for data
-export function fetchAllPets() {
+export function fetchPets() {
     const pets: Pet[] = [
         { id: 1, name: 'Bella' },
         { id: 2, name: 'Luna' },

@@ -1,58 +1,43 @@
-// import async thunk and redux toolkit functions
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// import the RootState and AppThunk types
-import { RootState, AppThunk } from '../../app/store';
-// import the fetchAllPets function
-import { fetchAllPets } from './petAPI';
+// create pets slice
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
+import { fetchPets } from './petsAPI';
+import { Pet } from '../../types';
 
-// define the Pet interface
-export interface Pet {
-    id: number;
-    name: string;
-}
-
-// define the PetsState interface
 export interface PetsState {
     pets: Pet[];
     status: 'idle' | 'loading' | 'failed';
 }
 
-// define the initial state
 const initialState: PetsState = {
     pets: [],
     status: 'idle',
 };
 
-// define the fetchAllPetsAsync thunk
-export const fetchAllPetsAsync = createAsyncThunk(
-    'pets/fetchAllPets',
+export const fetchPetsAsync = createAsyncThunk(
+    'pets/fetchPets',
     async () => {
-        const response = await fetchAllPets();
+        const response = await fetchPets();
         return response;
     }
 );
 
-// define the petsSlice
 export const petsSlice = createSlice({
     name: 'pets',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchAllPetsAsync.pending, (state) => {
+            .addCase(fetchPetsAsync.pending, (state) => {
                 state.status = 'loading';
             })
-            .addCase(fetchAllPetsAsync.fulfilled, (state, action) => {
+            .addCase(fetchPetsAsync.fulfilled, (state, action) => {
                 state.status = 'idle';
                 state.pets = action.payload;
-            })
-            .addCase(fetchAllPetsAsync.rejected, (state) => {
-                state.status = 'failed';
             });
     }
 });
 
-// export the petsReducer as default
+export const selectPets = (state: RootState) => state.pets;
+
 export default petsSlice.reducer;
-// export selector as selectAllPets
-export const selectAllPets = (state: RootState) => state.pets.pets;
